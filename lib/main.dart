@@ -66,11 +66,12 @@ class _MyHomePageState extends State<MyHomePage> {
             return Center(child: Text(snapshot.error));
           }
           return ListView.builder(
-              padding: EdgeInsets.all(8),
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, index) {
-                return Text(snapshot.data[index]['id'].toString());
-              });
+            padding: EdgeInsets.all(8),
+            itemCount: snapshot.data.length,
+            itemBuilder: (context, index) {
+              return Text(snapshot.data[index]['id'].toString());
+            },
+          );
         },
         future: getAllTodos(),
       ),
