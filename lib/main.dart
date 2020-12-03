@@ -59,11 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
           if (ConnectionState.active != null && !snapshot.hasData) {
             return Center(child: Text('Loading'));
           }
-
           if (snapshot.hasData && snapshot.data.length == 0) {
             return Center(child: Text('Nothing to see here!'));
           }
-
           if (ConnectionState.done != null && snapshot.hasError) {
             return Center(child: Text(snapshot.error));
           }
