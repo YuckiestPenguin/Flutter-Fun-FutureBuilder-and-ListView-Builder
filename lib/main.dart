@@ -50,20 +50,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
+
+          // WHILE THE CALL IS BEING MADE AKA LOADING
           if (ConnectionState.active != null && !snapshot.hasData) {
             return Center(child: Text('Loading'));
           }
-          if (snapshot.hasData && snapshot.data.length == 0) {
-            return Center(child: Text('Nothing to see here!'));
-          }
+
+          // WHEN THE CALL IS DONE BUT HAPPENS TO HAVE AN ERROR
           if (ConnectionState.done != null && snapshot.hasError) {
             return Center(child: Text(snapshot.error));
           }
+
+          // IF IT WORKS IT GOES HERE!
           return ListView.builder(
-            padding: EdgeInsets.all(8),
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
-              return Text(snapshot.data[index]['id'].toString());
+              return Text(snapshot.data[index].toString());
             },
           );
         },
