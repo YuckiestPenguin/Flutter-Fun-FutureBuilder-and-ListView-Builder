@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -28,12 +31,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  Future getAllTodos() async {
+    try {
+      var response =
+          await http.get('https://jsonplaceholder.typicode.com/todos');
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+      return json.decode(response.body);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.getAllTodos();
   }
 
   @override
@@ -42,25 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: FutureBuilder(
+        builder: (context, snapshot) {
+          if (ConnectionState.active != null && !snapshot.hasData) {
+            return Center(child: Text('Loading'));
+          }
+
+          if (snapshot.hasData && snapshot.data.length == 0) {
+            return Center(child: Text('Nothing to see here!'));
+          }
+
+          if (ConnectionState.done != null && snapshot.hasError) {
+            return Center(child: Text(snapshot.error));
+          }
+          return ListView.builder(
+              padding: EdgeInsets.all(8),
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Text(snapshot.data[index]['id'].toString());
+              });
+        },
+        future: getAllTodos(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
