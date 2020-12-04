@@ -50,10 +50,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: FutureBuilder(
         builder: (context, snapshot) {
-
           // WHILE THE CALL IS BEING MADE AKA LOADING
           if (ConnectionState.active != null && !snapshot.hasData) {
-            return Center(child: Text('Loading'));
+            return Center(child: CircularProgressIndicator());
           }
 
           // WHEN THE CALL IS DONE BUT HAPPENS TO HAVE AN ERROR
@@ -62,10 +61,25 @@ class _MyHomePageState extends State<MyHomePage> {
           }
 
           // IF IT WORKS IT GOES HERE!
-          return ListView.builder(
+          return ListView.separated(
+            padding: EdgeInsets.all(10),
             itemCount: snapshot.data.length,
             itemBuilder: (context, index) {
-              return Text(snapshot.data[index].toString());
+              return ListTile(
+                title: Text(snapshot.data[index]['title']),
+                trailing: snapshot.data[index]['completed']
+                    ? Icon(Icons.emoji_events, color: Color(0xffbF7B801))
+                    : Icon(
+                        Icons.campaign,
+                        color: Color(0xffb55286F),
+                      ),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return Divider(
+                indent: 20,
+                endIndent: 20,
+              );
             },
           );
         },
